@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <ConsolePause>true</ConsolePause>
+    <ExternalConsole>false</ExternalConsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Configuration\" />
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EventBus.Sqs\EventBus.Sqs.csproj" />
+  </ItemGroup>
+</Project>
