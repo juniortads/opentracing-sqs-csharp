@@ -12,7 +12,7 @@ namespace EventBus.Sqs.Configuration
     public static class ServiceCollectionExtensions
     {
         /// <summary>
-        ///    
+        ///      
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="builder"></param>
