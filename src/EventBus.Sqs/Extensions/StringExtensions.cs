@@ -10,9 +10,9 @@ namespace EventBus.Sqs.Extensions
             return name.Replace(IntegrationEvent.INTEGRATION_EVENT_SUFIX, string.Empty);
         }
 
-        internal static string BuildQueueUrl(this string url, bool isFifo)
+        internal static string BuildQueueUrl(this string eventName, bool isFifo)
         {
-            return null;
+            return isFifo ? $"{eventName}.fifo" : $"{eventName}";
         }
     }
 }

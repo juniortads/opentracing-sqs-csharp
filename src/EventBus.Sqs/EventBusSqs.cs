@@ -7,6 +7,7 @@ using Amazon.SQS;
 using Amazon.SQS.Model;
 using EventBus.Sqs.Events;
 using EventBus.Sqs.Extensions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -16,11 +17,13 @@ namespace EventBus.Sqs
     {
         private readonly ILogger<EventBusSqs> logger;
         private readonly IAmazonSQS amazonSQS;
+        private IConfiguration configuration;
 
-        public EventBusSqs(IAmazonSQS amazonSQS, ILogger<EventBusSqs> logger)
+        public EventBusSqs(IAmazonSQS amazonSQS, ILogger<EventBusSqs> logger, IConfiguration configuration)
         {
             this.logger = logger;
             this.amazonSQS = amazonSQS;
+            this.configuration = configuration;
         }
 
         public async Task<DeleteMessageResponse> Dequeue(IntegrationEvent @event)
@@ -29,7 +32,7 @@ namespace EventBus.Sqs
 
             var deleteRequest = new DeleteMessageRequest
             {
-                //QueueUrl = CreateQueueUrl(@event.ReplaceIntegrationEventName()),
+                QueueUrl = @event.ReplaceIntegrationEventName().BuildQueueUrl(IsTypeFifo),
                 ReceiptHandle = @event.ReceiptId
             };
             return await amazonSQS.DeleteMessageAsync(deleteRequest);
@@ -43,10 +46,10 @@ namespace EventBus.Sqs
 
             var createRequest = new SendMessageRequest
             {
-                //MessageDeduplicationId = _configEventBus.IsTypeFifo ? Guid.NewGuid().ToString() : null,
+                MessageDeduplicationId = IsTypeFifo ? Guid.NewGuid().ToString() : null,
                 MessageBody = jsonMessage,
-                //QueueUrl = CreateQueueUrl(@event.ReplaceIntegrationEventName()),
-                //MessageGroupId = _configEventBus.IsTypeFifo ? @event.Id : null
+                QueueUrl = @event.ReplaceIntegrationEventName().BuildQueueUrl(IsTypeFifo),
+                MessageGroupId = IsTypeFifo ? @event.Id : null
             };
 
             @event.MessageAttributes.BuildToMessageAttribute(createRequest.MessageAttributes);
@@ -60,7 +63,7 @@ namespace EventBus.Sqs
 
             var receiveMessageRequest = new ReceiveMessageRequest
             {
-                //QueueUrl = CreateQueueUrl(eventName),
+                QueueUrl = eventName.BuildQueueUrl(IsTypeFifo),
                 MaxNumberOfMessages = maxNumberOfMessages,
                 AttributeNames = new List<string> { "All" },
                 WaitTimeSeconds = waitTimeSeconds,
@@ -89,6 +92,17 @@ namespace EventBus.Sqs
                 }
             }
             return messageToReturn;
+        }
+
+        public bool IsTypeFifo
+        {
+            get
+            {
+                if (configuration["SQS_IS_FIFO"] == "true")
+                    return true;
+
+                return false;
+            }
         }
     }
 }

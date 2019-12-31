@@ -23,4 +23,7 @@
     <Folder Include="HealthCheck\" />
     <Folder Include="Extensions\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="nuget.config" />
+  </ItemGroup>
 </Project>
