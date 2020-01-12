@@ -13,9 +13,8 @@ namespace EventBus.Sqs.Tracing.Configuration
         /// 
         /// </summary>
         /// <param name="eventBusBuilder"></param>
-        /// <param name="logger"></param>
         /// <returns></returns>
-        public static IEventBusBuilder AddOpenTracing(this IEventBusBuilder eventBusBuilder, ILogger logger)
+        public static IEventBusBuilder AddOpenTracing(this IEventBusBuilder eventBusBuilder)
         {
             var services = eventBusBuilder.Services;
 
@@ -24,12 +23,17 @@ namespace EventBus.Sqs.Tracing.Configuration
 
             var eventBusDescriptor = services.First(s => s.ServiceType == typeof(IEventBus));
 
+            var serviceProvider = services.BuildServiceProvider();
+
+            var logger = serviceProvider.GetService<ILogger>();
+
             services.Replace(ServiceDescriptor.Singleton<IEventBus>(locator =>
             {
                 var eventBus = (IEventBus)(eventBusDescriptor?.ImplementationInstance ??
                                 ActivatorUtilities.GetServiceOrCreateInstance(locator, eventBusDescriptor.ImplementationType));
 
                 return new EventBusTracing(eventBus, GlobalTracer.Instance, logger);
+
             }));
 
             return eventBusBuilder;

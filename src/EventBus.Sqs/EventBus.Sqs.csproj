@@ -27,6 +27,7 @@
     <Folder Include="Configuration\" />
     <Folder Include="HealthCheck\" />
     <Folder Include="Extensions\" />
+    <Folder Include="ContractResolver\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="nuget.config" />

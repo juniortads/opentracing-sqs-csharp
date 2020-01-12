@@ -10,6 +10,7 @@ using EventBus.Sqs.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace EventBus.Sqs
 {
@@ -42,8 +43,16 @@ namespace EventBus.Sqs
         {
             logger.LogInformation($"Initialize Publish event: {@event}");
 
-            var jsonMessage = JsonConvert.SerializeObject(@event);
+            var contractResolver = new DefaultContractResolver { NamingStrategy = new SnakeCaseNamingStrategy() };
 
+            var jsonMessage = JsonConvert.SerializeObject(@event,
+
+                new JsonSerializerSettings
+                {
+                    ContractResolver = contractResolver,
+                    Formatting = Formatting.Indented
+                });
+            
             var createRequest = new SendMessageRequest
             {
                 MessageDeduplicationId = IsTypeFifo ? Guid.NewGuid().ToString() : null,

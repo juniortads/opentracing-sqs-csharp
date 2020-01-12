@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.Sqs", "EventBus.Sq
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.Sqs.Tracing", "EventBus.Sqs.Tracing\EventBus.Sqs.Tracing.csproj", "{22C1B044-2BB7-44E7-9237-95ED08267670}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "EventBus.Sqs.Tests.Unit", "EventBus.Sqs.Tests.Unit\EventBus.Sqs.Tests.Unit.csproj", "{A45E5A67-1744-467B-BA29-D5B3DAEB71B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.Sqs.Tests.Unit", "EventBus.Sqs.Tests.Unit\EventBus.Sqs.Tests.Unit.csproj", "{CD1C91E1-DCCC-47A7-8E3C-33DC9799EC44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +25,10 @@ Global
 		{22C1B044-2BB7-44E7-9237-95ED08267670}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22C1B044-2BB7-44E7-9237-95ED08267670}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22C1B044-2BB7-44E7-9237-95ED08267670}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A45E5A67-1744-467B-BA29-D5B3DAEB71B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A45E5A67-1744-467B-BA29-D5B3DAEB71B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A45E5A67-1744-467B-BA29-D5B3DAEB71B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A45E5A67-1744-467B-BA29-D5B3DAEB71B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD1C91E1-DCCC-47A7-8E3C-33DC9799EC44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD1C91E1-DCCC-47A7-8E3C-33DC9799EC44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD1C91E1-DCCC-47A7-8E3C-33DC9799EC44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD1C91E1-DCCC-47A7-8E3C-33DC9799EC44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +37,6 @@ Global
 		SolutionGuid = {1C8284DD-DDFE-4B64-A5DC-DE17BA56FE2E}
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A45E5A67-1744-467B-BA29-D5B3DAEB71B1} = {1AEFF259-F120-43A3-9B20-061D9EB4F2E8}
+		{CD1C91E1-DCCC-47A7-8E3C-33DC9799EC44} = {1AEFF259-F120-43A3-9B20-061D9EB4F2E8}
 	EndGlobalSection
 EndGlobal
