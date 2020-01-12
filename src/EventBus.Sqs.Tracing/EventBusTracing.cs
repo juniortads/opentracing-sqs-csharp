@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.SQS.Model;
 using EventBus.Sqs.Events;
+using EventBus.Sqs.Extensions;
 using EventBus.Sqs.Tracing.Extensions;
 using Microsoft.Extensions.Logging;
 using OpenTracing;
@@ -15,9 +16,9 @@ namespace EventBus.Sqs.Tracing
     {
         private readonly IEventBus eventBus;
         private readonly ITracer tracer;
-        private readonly ILogger logger;
+        private readonly ILogger<EventBusTracing> logger;
 
-        public EventBusTracing(IEventBus eventBus, ITracer tracer, ILogger logger)
+        public EventBusTracing(IEventBus eventBus, ITracer tracer, ILogger<EventBusTracing> logger)
         {
             this.eventBus = eventBus;
             this.tracer = tracer;
@@ -30,7 +31,7 @@ namespace EventBus.Sqs.Tracing
         /// <returns></returns>
         public async Task<DeleteMessageResponse> Dequeue(IntegrationEvent @event)
         {
-            using (var scope = tracer.StartSpanConsumer(@event.MessageAttributes, $"sqs-dequeue-event-{@event.GetType().Name.ToLower()}"))
+            using (var scope = tracer.StartSpanConsumer(@event.MessageAttributes, $"sqs-dequeue-event-{@event.GetType().Name.ReplaceSufixEvent().ToLower()}"))
             {
                 return await eventBus.Dequeue(@event);
             }
@@ -44,7 +45,7 @@ namespace EventBus.Sqs.Tracing
         {
             try
             {
-                using (var scope = tracer.BuildSpan($"sqs-enqueue-event-{@event.GetType().Name.ToLower()}").StartActive(finishSpanOnDispose: true))
+                using (var scope = tracer.BuildSpan($"sqs-enqueue-event-{@event.GetType().Name.ReplaceSufixEvent().ToLower()}").StartActive(finishSpanOnDispose: true))
                 {
                     var span = scope.Span.SetTag(Tags.SpanKind, Tags.SpanKindProducer);
 

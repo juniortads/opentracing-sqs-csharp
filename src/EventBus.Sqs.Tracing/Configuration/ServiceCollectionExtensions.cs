@@ -25,7 +25,7 @@ namespace EventBus.Sqs.Tracing.Configuration
 
             var serviceProvider = services.BuildServiceProvider();
 
-            var logger = serviceProvider.GetService<ILogger>();
+            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<EventBusTracing>();
 
             services.Replace(ServiceDescriptor.Singleton<IEventBus>(locator =>
             {
