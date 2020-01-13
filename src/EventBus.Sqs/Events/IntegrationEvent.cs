@@ -21,7 +21,7 @@ namespace EventBus.Sqs.Events
         [JsonProperty]
         public DateTime CreationDate { get; private set; }
 
-        [JsonProperty]
+        [JsonIgnore]
         public string ReceiptId { get; set; }
 
         [JsonIgnore]
