@@ -20,7 +20,7 @@ Install the [NuGet package](https://www.nuget.org/packages/EventBus.Sqs.Tracing/
 
     > dotnet add package EventBus.Sqs.Tracing
 
-## Usage
+## Getting started
 
 **Before**, in your application's _Startup.cs_ file, configure OpenTracing first.
 ```cs
@@ -39,23 +39,62 @@ services.AddSingleton(serviceProvider =>
     return tracer;
 });
 ```
-#### Check this link for more `Jaeger.Configuration`
+#### Check this link for more information about Jaeger configuration via environment.
 https://github.com/jaegertracing/jaeger-client-csharp
 
 **Next**, configure EventBus.Sqs with tracing: 
 ```cs
 using EventBus.Sqs.Configuration;
 using EventBus.Sqs.Tracing.Configuration;
-
 ...
 services.AddEventBusSQS(Configuration)
         .AddOpenTracing();
 ```
-### Health Checks for SQS
+### Configure health checks for SQS
 ```cs
 services.AddHealthChecks()
         .AddSqsCheck<HereAddYourIntegrationEvent>();
 ```
+**Finally**, We can using in your application's _Controller.cs_ file, Check below this example:
+```cs
+[ApiController]
+[Route("[controller]")]
+public class WeatherForecastController : ControllerBase
+{
+    private readonly IEventBus eventBus;
+    public WeatherForecastController(IEventBus eventBus)
+    {
+        this.eventBus = eventBus;
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> Create()
+    {
+        var rng = new Random();
+        //Create sample Integration Event
+        var weatherInEvent = new WeatherInEvent(Guid.NewGuid().ToString(), "Freezing");
+
+        await eventBus.Enqueue(weatherInEvent);
+
+        return Accepted();
+    }
+}
+```
+**Don't forget**, Creating your Integration event:
+```cs
+public class WeatherInEvent : IntegrationEvent
+{
+    public string WeatherEventId { get; set; }
+    public string Summary { get; set; }
+
+    public WeatherInEvent(string id, string summary) : base(id, DateTime.UtcNow)
+    {
+        WeatherEventId = id;
+        Summary = summary;
+    }
+}
+```
+
 ## Contact
 
 These [email addresses](MAINTAINERS) serve as the main contact addresses for this project.
