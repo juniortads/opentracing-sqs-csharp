@@ -39,6 +39,9 @@ services.AddSingleton(serviceProvider =>
     return tracer;
 });
 ```
+#### Check this link for more `Jaeger.Configuration`
+https://github.com/jaegertracing/jaeger-client-csharp
+
 **Next**, configure EventBus.Sqs with tracing: 
 ```cs
 using EventBus.Sqs.Configuration;
