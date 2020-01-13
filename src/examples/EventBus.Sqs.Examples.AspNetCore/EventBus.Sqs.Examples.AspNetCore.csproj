@@ -19,4 +19,7 @@
   <ItemGroup>
     <PackageReference Include="Jaeger" Version="0.3.6" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Events\" />
+  </ItemGroup>
 </Project>

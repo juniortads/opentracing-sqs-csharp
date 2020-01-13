@@ -11,22 +11,10 @@ namespace EventBus.Sqs.Configuration
 {
     public static class ServiceCollectionExtensions
     {
-        /// <summary>
-        ///      
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="builder"></param>
-        /// <returns></returns>
-        public static IHealthChecksBuilder AddSqsCheck<T>(this IHealthChecksBuilder builder)
+        public static IHealthChecksBuilder AddSqsCheck<TEvent>(this IHealthChecksBuilder builder) where TEvent : IntegrationEvent
         {
-            return builder.AddCheck<SqsHealthCheck>(typeof(T).Name.ReplaceSufixEvent());
+            return builder.AddCheck<SqsHealthCheck>(typeof(TEvent).Name.ReplaceSufixEvent());
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
         public static IEventBusBuilder AddEventBusSQS(this IServiceCollection services, IConfiguration configuration)
         {
             Validate(configuration);

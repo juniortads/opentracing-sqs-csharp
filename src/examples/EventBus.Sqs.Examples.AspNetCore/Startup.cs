@@ -1,4 +1,5 @@
 using EventBus.Sqs.Configuration;
+using EventBus.Sqs.Examples.AspNetCore.Events;
 using EventBus.Sqs.Tracing.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +39,9 @@ namespace EventBus.Sqs.Examples.AspNetCore
 
             services.AddEventBusSQS(Configuration)
                     .AddOpenTracing();
+
+            services.AddHealthChecks()
+                    .AddSqsCheck<WeatherInEvent>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
