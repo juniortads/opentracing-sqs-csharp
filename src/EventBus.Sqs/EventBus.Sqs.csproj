@@ -3,16 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>true</IsPackable>
-    <PackageVersion>1.0.2</PackageVersion>
+    <PackageVersion>1.0.3</PackageVersion>
     <NuspecProperties>version=$(Version)</NuspecProperties>
     <Authors>Joel Júnior</Authors>
     <RepositoryUrl>https://github.com/juniortads/opentracing-sqs-csharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Class1.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.100.1" />
