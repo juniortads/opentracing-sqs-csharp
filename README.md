@@ -94,6 +94,8 @@ public class WeatherInEvent : IntegrationEvent
     }
 }
 ```
+### More examples:
+[Example](../examples)
 
 ## Contact
 
