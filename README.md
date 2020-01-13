@@ -22,6 +22,25 @@ Install the [NuGet package](https://www.nuget.org/packages/EventBus.Sqs.Tracing/
 
 ## Usage
 
+**Before**, in your application's _Startup.cs_ file, configure OpenTracing first. 
+
+```cs
+using OpenTracing.Util;
+...
+services.AddSingleton(serviceProvider =>
+{
+    var loggerFactory = new LoggerFactory();
+
+    var config = Jaeger.Configuration.FromEnv(loggerFactory);
+    var tracer = config.GetTracer();
+
+    if (!GlobalTracer.IsRegistered())
+        GlobalTracer.Register(tracer);
+
+    return tracer;
+});
+```
+
 ## Contact
 
 These [email addresses](MAINTAINERS) serve as the main contact addresses for this project.

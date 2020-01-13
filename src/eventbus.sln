@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.Sqs.Tracing", "Eve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.Sqs.Tests.Unit", "EventBus.Sqs.Tests.Unit\EventBus.Sqs.Tests.Unit.csproj", "{CD1C91E1-DCCC-47A7-8E3C-33DC9799EC44}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{E9C7D38B-6D92-4AD8-8958-028F7A4FBE51}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus.Sqs.Examples.AspNetCore", "examples\EventBus.Sqs.Examples.AspNetCore\EventBus.Sqs.Examples.AspNetCore.csproj", "{29BB37D1-04DF-4D9A-ACDB-B88E2D301F5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,10 @@ Global
 		{CD1C91E1-DCCC-47A7-8E3C-33DC9799EC44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD1C91E1-DCCC-47A7-8E3C-33DC9799EC44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD1C91E1-DCCC-47A7-8E3C-33DC9799EC44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29BB37D1-04DF-4D9A-ACDB-B88E2D301F5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29BB37D1-04DF-4D9A-ACDB-B88E2D301F5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29BB37D1-04DF-4D9A-ACDB-B88E2D301F5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29BB37D1-04DF-4D9A-ACDB-B88E2D301F5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -38,5 +46,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CD1C91E1-DCCC-47A7-8E3C-33DC9799EC44} = {1AEFF259-F120-43A3-9B20-061D9EB4F2E8}
+		{29BB37D1-04DF-4D9A-ACDB-B88E2D301F5D} = {E9C7D38B-6D92-4AD8-8958-028F7A4FBE51}
 	EndGlobalSection
 EndGlobal
