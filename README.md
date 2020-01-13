@@ -42,12 +42,17 @@ services.AddSingleton(serviceProvider =>
 **Next**, configure EventBus.Sqs with tracing: 
 ```cs
 using EventBus.Sqs.Configuration;
+using EventBus.Sqs.Tracing.Configuration;
+
 ...
 services.AddEventBusSQS(Configuration)
         .AddOpenTracing();
 ```
-
-
+### Health Checks for SQS
+```cs
+services.AddHealthChecks()
+        .AddSqsCheck<HereAddYourIntegrationEvent>();
+```
 ## Contact
 
 These [email addresses](MAINTAINERS) serve as the main contact addresses for this project.
