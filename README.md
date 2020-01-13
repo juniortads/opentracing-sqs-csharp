@@ -95,7 +95,7 @@ public class WeatherInEvent : IntegrationEvent
 }
 ```
 ### More examples:
-[Link](../examples)
+[Link](https://github.com/juniortads/opentracing-sqs-csharp/tree/develop/src/examples/)
 
 ![Tracing](https://github.com/juniortads/opentracing-sqs-csharp/blob/master/images/tracing-sqs.png)
 
