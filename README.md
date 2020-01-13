@@ -14,6 +14,12 @@ with [OpenTracing](http://opentracing.io/).
 
 ## Installation
 
+Install the [NuGet package](https://www.nuget.org/packages/EventBus.Sqs.Tracing/):
+
+    > dotnet add package EventBus.Sqs
+
+    > dotnet add package EventBus.Sqs.Tracing
+
 ## Usage
 
 ## Contact
