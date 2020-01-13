@@ -95,7 +95,9 @@ public class WeatherInEvent : IntegrationEvent
 }
 ```
 ### More examples:
-[Example](../examples)
+[Link](../examples)
+
+![Tracing](../images/tracing-sqs.png)
 
 ## Contact
 
