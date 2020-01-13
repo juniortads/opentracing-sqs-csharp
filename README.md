@@ -97,7 +97,7 @@ public class WeatherInEvent : IntegrationEvent
 ### More examples:
 [Link](../examples)
 
-![Tracing](../images/tracing-sqs.png)
+![Tracing](https://github.com/juniortads/opentracing-sqs-csharp/blob/master/images/tracing-sqs.png)
 
 ## Contact
 
