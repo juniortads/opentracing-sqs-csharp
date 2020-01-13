@@ -1,0 +1,28 @@
+version: '1.0.{build}'
+image: Visual Studio 2019 Preview
+branches:
+  only:
+  - master
+init:
+  # Best practice (Windows line endings different to Unix/Linux)
+  - cmd: git config --global core.autocrlf true
+install:
+  - appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/v4.0.0/nuget.exe
+before_build:
+  # Display .NET Core version
+  - cmd: dotnet --version
+  - cmd: dotnet restore ./src/EventBus.Sqs/EventBus.Sqs.csproj --verbosity m
+  - cmd: dotnet restore ./src/EventBus.Sqs.Tracing/EventBus.Sqs.Tracing.csproj --verbosity m
+build_script:
+  - cmd: dotnet build ./src/EventBus.Sqs/EventBus.Sqs.csproj
+  - cmd: dotnet build ./src/EventBus.Sqs.Tracing/EventBus.Sqs.Tracing.csproj
+  - cmd: dotnet pack ./src/EventBus.Sqs/EventBus.Sqs.csproj -c Release
+  - cmd: dotnet pack ./src/EventBus.Sqs.Tracing/EventBus.Sqs.Tracing.csproj -c Release
+artifacts:
+  - path: ./src/EventBus.Sqs/bin/Release/*.nupkg
+  - path: ./src/EventBus.Sqs.Tracing/bin/Release/*.nupkg
+deploy:
+  provider: NuGet                
+  api_key:
+    secure: b+BC42m8p9hkAZKzg+HY18CQC8ln2YxiL7QntDPdaeMP3wAdImYVgpnZ4ZPFMtS4
+  skip_symbols: true
