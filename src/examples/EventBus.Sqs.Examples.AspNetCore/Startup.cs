@@ -1,3 +1,4 @@
+using System;
 using EventBus.Sqs.Configuration;
 using EventBus.Sqs.Examples.AspNetCore.Events;
 using EventBus.Sqs.Tracing.Configuration;
@@ -23,6 +24,13 @@ namespace EventBus.Sqs.Examples.AspNetCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            Environment.SetEnvironmentVariable("JAEGER_SERVICE_NAME", Configuration["JAEGER_SERVICE_NAME"]);
+            Environment.SetEnvironmentVariable("JAEGER_AGENT_HOST", Configuration["JAEGER_AGENT_HOST"]);
+            Environment.SetEnvironmentVariable("JAEGER_AGENT_PORT", Configuration["JAEGER_AGENT_PORT"]);
+            Environment.SetEnvironmentVariable("JAEGER_SAMPLER_TYPE", Configuration["JAEGER_SAMPLER_TYPE"]);
+
+            services.AddOpenTracing();
 
             services.AddSingleton(serviceProvider =>
             {

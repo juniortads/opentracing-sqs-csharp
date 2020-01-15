@@ -24,7 +24,7 @@ namespace EventBus.Sqs.Examples.AspNetCore.Controllers
             _logger = logger;
             this.eventBus = eventBus;
         }
-
+        
         [HttpPost]
         public async Task<ActionResult> Create()
         {
