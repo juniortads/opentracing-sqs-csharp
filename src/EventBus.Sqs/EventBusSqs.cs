@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Amazon.SQS;
 using Amazon.SQS.Model;
+using EventBus.Sqs.ContractResolver;
 using EventBus.Sqs.Events;
 using EventBus.Sqs.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -92,7 +93,11 @@ namespace EventBus.Sqs
                 {
                     foreach (var item in result.Messages)
                     {
-                        var eventBody = JsonConvert.DeserializeObject<TEvent>(item.Body);
+                        var eventBody = JsonConvert.DeserializeObject<TEvent>(item.Body, new JsonSerializerSettings
+                        {
+                            ContractResolver = new SnakeCasePropertyNames()
+                        });
+
                         eventBody.ReceiptId = item.ReceiptHandle;
                         eventBody.MessageAttributes = item.MessageAttributes.BuildToMessageAttribute();
 

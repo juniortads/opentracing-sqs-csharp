@@ -18,8 +18,9 @@ namespace EventBus.Sqs.Tracing.Configuration
         {
             var services = eventBusBuilder.Services;
 
+            /**
             if (!GlobalTracer.IsRegistered())
-                throw new NullReferenceException("The GlobalTracer is not registered. <null>");
+                throw new NullReferenceException("The GlobalTracer is not registered. <null>");*/
 
             var eventBusDescriptor = services.First(s => s.ServiceType == typeof(IEventBus));
 

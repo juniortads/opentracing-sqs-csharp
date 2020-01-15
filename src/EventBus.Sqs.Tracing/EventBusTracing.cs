@@ -60,7 +60,7 @@ namespace EventBus.Sqs.Tracing
             catch (Exception ex)
             {
                 logger.LogError(ex.Message, ex);
-                throw;
+                throw ex;
             }
         }
         /// <summary>
