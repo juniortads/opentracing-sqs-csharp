@@ -16,62 +16,90 @@ namespace EventBus.Sqs.Tracing
     {
         private readonly IEventBus eventBus;
         private readonly ITracer tracer;
-        private readonly ILogger<EventBusTracing> logger;
+        private ILogger<EventBusTracing> logger;
 
-        public EventBusTracing(IEventBus eventBus, ITracer tracer, ILogger<EventBusTracing> logger)
+        public EventBusTracing(IEventBus eventBus, ITracer tracer)
         {
             this.eventBus = eventBus;
             this.tracer = tracer;
-            this.logger = logger;
+
+            CreateLogger();
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="event"></param>
-        /// <returns></returns>
+
+        private void CreateLogger()
+        {
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddFilter("EventBus.Sqs.Tracing", LogLevel.Debug)
+                    .AddConsole();
+            });
+            logger = loggerFactory.CreateLogger<EventBusTracing>();
+        }
+
         public async Task<DeleteMessageResponse> Dequeue(IntegrationEvent @event)
         {
-            using (var scope = tracer.StartSpanConsumer(@event.MessageAttributes, $"sqs-dequeue-event-{@event.GetType().Name.ReplaceSufixEvent().ToLower()}"))
+            var operationName = "SQS::DeleteMessageAsync/";
+            var eventName = $"{operationName}{@event.GetType().Name.ReplaceSufixEvent().ToLower()}";
+
+            using (var scope = tracer.StartSpanConsumer(eventName))
             {
+                logger.LogInformation($"Dequeue::{DateTime.Now}|{eventName} SpanId:{scope.Span.Context.SpanId} TraceId:{scope.Span.Context.TraceId}");
+
                 return await eventBus.Dequeue(@event);
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="event"></param>
-        /// <returns></returns>
+
         public async Task<SendMessageResponse> Enqueue(IntegrationEvent @event)
         {
-            try
+            var operationName = "SQS::SendMessageAsync/";
+            var eventName = $"{operationName}{@event.GetType().Name.ReplaceSufixEvent().ToLower()}";
+
+            using (var scope = tracer.BuildSpan(eventName).StartActive(true))
             {
-                using (var scope = tracer.BuildSpan($"sqs-enqueue-event-{@event.GetType().Name.ReplaceSufixEvent().ToLower()}").StartActive(finishSpanOnDispose: true))
-                {
-                    var span = scope.Span.SetTag(Tags.SpanKind, Tags.SpanKindProducer);
+                var span = scope.Span.SetTag(Tags.SpanKind, Tags.SpanKindProducer);
 
-                    var attributes = new Dictionary<string, string>();
-                    tracer.Inject(span.Context, BuiltinFormats.TextMap, new TextMapInjectAdapter(attributes));
+                var attributes = new Dictionary<string, string>();
 
-                    @event.MessageAttributes = attributes;
+                tracer.Inject(span.Context, BuiltinFormats.TextMap, new TextMapInjectAdapter(attributes));
+                @event.MessageAttributes = attributes;
 
-                    return await eventBus.Enqueue(@event);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex.Message, ex);
-                throw;
+                logger.LogInformation($"Enqueue::{DateTime.UtcNow}|{eventName} SpanId:{scope.Span.Context.SpanId} TraceId:{scope.Span.Context.TraceId}");
+
+                return await eventBus.Enqueue(@event);
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TEvent"></typeparam>
-        /// <param name="maxNumberOfMessages"></param>
-        /// <returns></returns>
-        public IEnumerable<TEvent> ReceiveMessage<TEvent>(int maxNumberOfMessages, int waitTimeSeconds) where TEvent : IntegrationEvent
+
+        public TEvent ReceiveMessage<TEvent>(int waitTimeSeconds) where TEvent : IntegrationEvent
         {
-            return eventBus.ReceiveMessage<TEvent>(maxNumberOfMessages, waitTimeSeconds);
+            var message = eventBus.ReceiveMessage<TEvent>(waitTimeSeconds);
+
+            if (message != null)
+            {
+                var operationName = "SQS::ReceiveMessageAsync/";
+                var eventName = $"{operationName}{typeof(TEvent).Name.ReplaceSufixEvent().ToLower()}";
+
+                using (var scope = tracer.StartSpanConsumer(message.MessageAttributes, eventName))
+                {
+                    tracer.ScopeManager.Activate(tracer.ActiveSpan, false);
+
+                    logger.LogInformation($"ReceiveMessage::{DateTime.UtcNow} | {eventName} SpanId:{scope.Span.Context.SpanId} TraceId:{scope.Span.Context.TraceId}");
+
+                    return message;
+                }
+            }
+            return message;
+        }
+
+        public void Dispose()
+        {
+            IScope scope = tracer.ScopeManager.Active;
+            if (scope != null)
+                scope.Dispose();
+
+            eventBus.Dispose();
         }
     }
 }
