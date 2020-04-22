@@ -1,3 +1,4 @@
+[![OpenTracing Badge](https://img.shields.io/badge/OpenTracing-enabled-blue.svg)](https://opentracing.io/registry/csharp-sqs/)
 [![Build status](https://ci.appveyor.com/api/projects/status/k7o1c0k2tbu4nhx6/branch/master?svg=true)](https://ci.appveyor.com/project/juniortads/opentracing-sqs-csharp/branch/master) [![NuGet](https://buildstats.info/nuget/EventBus.Sqs.Tracing)](http://www.nuget.org/packages/EventBus.Sqs.Tracing)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -112,7 +113,7 @@ This project is licensed under the terms of the MIT license, see also the full [
 
 MIT License
 
-Copyright (c) 2019 Joel Junior
+Copyright (c) 2020 Joel Junior
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

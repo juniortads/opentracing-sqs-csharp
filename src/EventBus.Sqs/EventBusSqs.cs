@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Amazon.SQS;
 using Amazon.SQS.Model;
+using EventBus.Sqs.ContractResolver;
 using EventBus.Sqs.Events;
 using EventBus.Sqs.Extensions;
 using Microsoft.Extensions.Configuration;
