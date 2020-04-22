@@ -15,23 +15,19 @@ using Newtonsoft.Json.Serialization;
 
 namespace EventBus.Sqs
 {
-    internal class EventBusSqs : IEventBus
+    public class EventBusSqs : IEventBus
     {
-        private readonly ILogger<EventBusSqs> logger;
         private readonly IAmazonSQS amazonSQS;
         private IConfiguration configuration;
 
-        public EventBusSqs(IAmazonSQS amazonSQS, ILogger<EventBusSqs> logger, IConfiguration configuration)
+        public EventBusSqs(IAmazonSQS amazonSQS, IConfiguration configuration)
         {
-            this.logger = logger;
             this.amazonSQS = amazonSQS;
             this.configuration = configuration;
         }
 
         public async Task<DeleteMessageResponse> Dequeue(IntegrationEvent @event)
         {
-            logger.LogInformation($"Initialize Dequeue event: {@event}");
-
             var deleteRequest = new DeleteMessageRequest
             {
                 QueueUrl = @event.ReplaceIntegrationEventName().BuildQueueUrl(IsTypeFifo),
@@ -42,8 +38,6 @@ namespace EventBus.Sqs
 
         public async Task<SendMessageResponse> Enqueue(IntegrationEvent @event)
         {
-            logger.LogInformation($"Initialize Publish event: {@event}");
-
             var contractResolver = new DefaultContractResolver { NamingStrategy = new SnakeCaseNamingStrategy() };
 
             var jsonMessage = JsonConvert.SerializeObject(@event,
@@ -67,14 +61,14 @@ namespace EventBus.Sqs
             return await amazonSQS.SendMessageAsync(createRequest);
         }
 
-        public IEnumerable<TEvent> ReceiveMessage<TEvent>(int maxNumberOfMessages = 1, int waitTimeSeconds = 5) where TEvent : IntegrationEvent
+        public TEvent ReceiveMessage<TEvent>(int waitTimeSeconds = 5) where TEvent : IntegrationEvent
         {
             var eventName = typeof(TEvent).Name.ReplaceSufixEvent();
 
             var receiveMessageRequest = new ReceiveMessageRequest
             {
                 QueueUrl = eventName.BuildQueueUrl(IsTypeFifo),
-                MaxNumberOfMessages = maxNumberOfMessages,
+                MaxNumberOfMessages = 1,
                 AttributeNames = new List<string> { "All" },
                 WaitTimeSeconds = waitTimeSeconds,
                 VisibilityTimeout = 30,
@@ -85,27 +79,26 @@ namespace EventBus.Sqs
                                  .GetAwaiter()
                                  .GetResult();
 
-            var messageToReturn = new List<TEvent>();
-
             if (result.HttpStatusCode == HttpStatusCode.OK)
             {
-                if (result.Messages.Any())
-                {
-                    foreach (var item in result.Messages)
-                    {
-                        var eventBody = JsonConvert.DeserializeObject<TEvent>(item.Body, new JsonSerializerSettings
-                        {
-                            ContractResolver = new SnakeCasePropertyNames()
-                        });
+                var message = result.Messages.FirstOrDefault();
 
-                        eventBody.ReceiptId = item.ReceiptHandle;
-                        eventBody.MessageAttributes = item.MessageAttributes.BuildToMessageAttribute();
+                if (message == null)
+                    return null;
 
-                        messageToReturn.Add(eventBody);
-                    }
-                }
+                var eventBody = JsonConvert.DeserializeObject<TEvent>(message.Body);
+                eventBody.ReceiptId = message.ReceiptHandle;
+                eventBody.MessageAttributes = message.MessageAttributes.BuildToMessageAttribute();
+
+                return eventBody;
             }
-            return messageToReturn;
+            return null;
+        }
+
+        public void Dispose()
+        {
+            if (amazonSQS != null)
+                amazonSQS.Dispose();
         }
 
         private bool IsTypeFifo
