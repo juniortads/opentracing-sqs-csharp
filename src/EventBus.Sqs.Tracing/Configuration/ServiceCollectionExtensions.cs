@@ -26,14 +26,12 @@ namespace EventBus.Sqs.Tracing.Configuration
 
             var serviceProvider = services.BuildServiceProvider();
 
-            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<EventBusTracing>();
-
-            services.Replace(ServiceDescriptor.Singleton<IEventBus>(locator =>
+            services.Replace(ServiceDescriptor.Scoped<IEventBus>(locator =>
             {
                 var eventBus = (IEventBus)(eventBusDescriptor?.ImplementationInstance ??
                                 ActivatorUtilities.GetServiceOrCreateInstance(locator, eventBusDescriptor.ImplementationType));
 
-                return new EventBusTracing(eventBus, GlobalTracer.Instance, logger);
+                return new EventBusTracing(eventBus, GlobalTracer.Instance);
 
             }));
 

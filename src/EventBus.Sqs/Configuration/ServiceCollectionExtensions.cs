@@ -1,6 +1,8 @@
 ﻿using System;
+using Amazon;
 using Amazon.Extensions.NETCore.Setup;
 using Amazon.SQS;
+using EventBus.Sqs.AWSHelpers;
 using EventBus.Sqs.Events;
 using EventBus.Sqs.Extensions;
 using EventBus.Sqs.HealthCheck;
@@ -19,8 +21,11 @@ namespace EventBus.Sqs.Configuration
         {
             Validate(configuration);
 
-            services.AddSingleton<IEventBus, EventBusSqs>();
-            services.AddAWSService<IAmazonSQS>(ServiceLifetime.Singleton);
+            services.AddDefaultAWSOptions(new AWSOptions {
+                Region = AWSGeneralHelper.GetRegionEndpoint(configuration["AWS:Region"])
+            });
+            services.AddScoped<IEventBus, EventBusSqs>();
+            services.AddAWSService<IAmazonSQS>(ServiceLifetime.Scoped);
 
             return new EventBusBuilder(services);
         }
@@ -29,6 +34,9 @@ namespace EventBus.Sqs.Configuration
         {
             if (string.IsNullOrEmpty(configuration["SQS_IS_FIFO"]))
                 throw new ArgumentException("The parameter SQS_IS_FIFO is null or empty.");
+
+            if(string.IsNullOrWhiteSpace(configuration["AWS:Region"]))
+                throw new ArgumentException("The parameter AWS:Region is null or empty.");
         }
     }
 }

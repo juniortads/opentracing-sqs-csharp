@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.SQS.Model;
 using EventBus.Sqs.Events;
 
 namespace EventBus.Sqs
 {
-    public interface IEventBus
+    public interface IEventBus : IDisposable
     {
         Task<SendMessageResponse> Enqueue(IntegrationEvent @event);
 
         Task<DeleteMessageResponse> Dequeue(IntegrationEvent @event);
 
-        IEnumerable<TEvent> ReceiveMessage<TEvent>(int maxNumberOfMessages, int waitTimeSeconds) where TEvent : IntegrationEvent;
+        TEvent ReceiveMessage<TEvent>(int waitTimeSeconds) where TEvent : IntegrationEvent;
     }
 }
