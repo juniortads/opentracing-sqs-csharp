@@ -12,7 +12,7 @@ namespace EventBus.Sqs.Extensions
 
         public static string BuildQueueUrl(this string eventName, bool isFifo)
         {
-            return isFifo ? $"{eventName}.fifo" : $"{eventName}";
+            return isFifo ? $"/{eventName}.fifo" : $"/{eventName}";
         }
     }
 }
